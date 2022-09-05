@@ -2,3 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
+
+# Ignore data we generate
+data/*
+!data/sydneybeaches.csv

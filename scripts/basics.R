@@ -25,17 +25,28 @@ select_all(beaches, tolower)
 
 # Clean column names by converting to lowercase and inserting underscores
 # Also saves this new object back to the beaches variable
-beaches <- clean_names(beaches)
+cleanbeaches <- clean_names(beaches)
 
 # Rename 'enterococci_cfu_100ml' column to 'beachbugs'
-beaches <- rename(beaches, beachbugs = enterococci_cfu_100ml)
+cleanbeaches <- rename(cleanbeaches, beachbugs = enterococci_cfu_100ml)
 
 # Select a subset of columns ----
 
 # Since we don't need all the columns in the dataset, we can choose to select
 # just a subset of them, making it easier to work with our data.
-select(beaches, council, site, beachbugs)
+select(cleanbeaches, council, site, beachbugs)
 
 # We can also re-order the columns to prioritize the ones we're most interested
 # in by using the everything() function
-select(beaches, council, site, beachbugs, everything())
+select(cleanbeaches, council, site, beachbugs, everything())
+
+# Using pipes ----
+
+# We can use pipes to simplify the process from above
+cleanbeaches <- beaches %>%
+    clean_names() %>%
+    rename(beachbugs = enterococci_cfu_100ml) %>%
+    select(council, site, beachbugs)
+
+# Writing to a CSV file ----
+write_csv(cleanbeaches, here('data', 'cleanbeaches.csv'))
