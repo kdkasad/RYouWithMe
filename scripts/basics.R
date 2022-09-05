@@ -46,7 +46,60 @@ select(cleanbeaches, council, site, beachbugs, everything())
 cleanbeaches <- beaches %>%
     clean_names() %>%
     rename(beachbugs = enterococci_cfu_100ml) %>%
-    select(council, site, beachbugs)
+    select(council, site, beachbugs, everything())
 
 # Writing to a CSV file ----
 write_csv(cleanbeaches, here('data', 'cleanbeaches.csv'))
+
+# Question #1 ----
+# Which beach has the highest levels of bacteria?
+
+# Sort on 'beachbugs' column in descending order
+worstbugs <- cleanbeaches %>% arrange(-beachbugs)
+
+# Sort the data for just Coogee Beach in descending order
+worstcoogee <- cleanbeaches %>%
+    filter(site == 'Coogee Beach') %>%
+    arrange(-beachbugs)
+
+# Pick your favourite beach and determine whether its most extreme beachbug
+# values are higher or lower than the worst day at Coogee.
+malabar_worst <- cleanbeaches %>%
+    filter(site == 'Malabar Beach') %>%
+    arrange(-beachbugs)
+print(max(malabar_worst$beachbugs))
+
+# Question #2 ----
+# Does Coogee or Bondi have more extreme bacteria levels? Which beach has the
+# worst bacteria levels on average?
+
+# Filter on multiple values
+coogee_bondi <- cleanbeaches %>%
+    filter(site %in% c('Coogee Beach', 'Bondi Beach')) %>%
+    arrange(-beachbugs)
+
+# Create a grouped summary of the data
+coogee_bondi %>%
+    group_by(site) %>%
+    summarize(maxbugs = max(beachbugs, na.rm = TRUE),
+              medianbugs = median(beachbugs, na.rm = TRUE),
+              meanbugs = mean(beachbugs, na.rm = TRUE))
+
+# Question #3 ----
+# Which council does the worst job at keeping their beaches clean?
+
+# My own approach (without the tutorial)
+cleanbeaches %>%
+    group_by(council) %>%
+    summarize(maxbugs = max(beachbugs, na.rm = TRUE),
+              medianbugs = median(beachbugs, na.rm = TRUE),
+              meanbugs = mean(beachbugs, na.rm = TRUE))
+
+# Print distinct values for the 'council' column
+cleanbeaches %>% distinct(council)
+
+# Group by both council and site
+cleanbeaches %>%
+    group_by(council, site) %>%
+    summarize(medianbugs = median(beachbugs, na.rm = TRUE),
+              meanbugs = mean(beachbugs, na.rm = TRUE))
