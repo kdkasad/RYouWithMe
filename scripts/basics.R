@@ -113,3 +113,32 @@ testdate <- cleanbeaches |>
 # Combine the 'council' and 'site' columns
 council_site <- cleanbeaches |>
     unite(council_site, council:site, remove = FALSE)
+
+# Use mutate to transform the 'beachbugs' data
+cleanbeaches |>
+    mutate(logbeachbugs = log(beachbugs))
+
+# Use mutate to compute new numeric variable
+cleanbeaches |>
+    mutate(bbchange = beachbugs - lag(beachbugs))
+
+# Use mutate to compute new logical variable
+cleanbeaches |>
+    mutate(buggier = beachbugs > mean(beachbugs, na.rm = TRUE))
+
+# Assembling a transformed dataframe ----
+
+# Computes new values:
+#   Separates the date into day, month, and year values
+#   Computes the log of the beachbugs value
+#   Computes the difference in beachbugs since the previous row
+#   Computes whether the current reading is above the average reading
+#   Computes whether the current reading is above the site's average reading
+
+cleanbeaches_new <- cleanbeaches |>
+    separate(date, c('day', 'month', 'year'), sep = '/') |>
+    mutate(bblog = log(beachbugs)) |>
+    mutate(bbdiff = beachbugs - lag(beachbugs)) |>
+    mutate(bbhigher = beachbugs > mean(beachbugs, na.rm = TRUE)) |>
+    group_by(site) |>
+    mutate(bbhigherbysite = beachbugs > mean(beachbugs, na.rm = TRUE))
