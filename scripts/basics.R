@@ -103,3 +103,13 @@ cleanbeaches |>
     group_by(council, site) |>
     summarize(medianbugs = median(beachbugs, na.rm = TRUE),
               meanbugs = mean(beachbugs, na.rm = TRUE))
+
+# Compute new columns ----
+
+# Separate the date string into separate values
+testdate <- cleanbeaches |>
+    separate(date, c('day', 'month', 'year'))
+
+# Combine the 'council' and 'site' columns
+council_site <- cleanbeaches |>
+    unite(council_site, council:site, remove = FALSE)
