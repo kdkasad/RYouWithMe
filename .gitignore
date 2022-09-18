@@ -4,5 +4,4 @@
 .Ruserdata
 
 # Ignore data we generate
-data/*
-!data/sydneybeaches.csv
+data/cleanbeaches.csv
